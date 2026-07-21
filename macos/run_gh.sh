@@ -52,7 +52,7 @@ login_gh() {
     echo -e "${RED}✗ gh 尚未安裝，請先執行安裝${RESET}"
     return 1
   fi
-  if gh auth status &>/dev/null; then
+  if gh auth status --hostname github.com &>/dev/null; then
     echo -e "${YELLOW}⚠ 已偵測到登入狀態：${RESET}"
     gh auth status
     echo ""
@@ -72,7 +72,7 @@ logout_gh() {
     echo -e "${RED}✗ gh 尚未安裝${RESET}"
     return 1
   fi
-  if ! gh auth status &>/dev/null; then
+  if ! gh auth status --hostname github.com &>/dev/null; then
     echo -e "${YELLOW}⚠ 目前尚未登入任何 GitHub 帳號${RESET}"
     return 0
   fi
@@ -82,7 +82,7 @@ logout_gh() {
   read -rp "確定要登出？(y/N): " confirm
   if [[ "$(echo "$confirm" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
     local host
-    host=$(gh auth status 2>&1 | grep "Logged in to" | awk '{print $4}' | head -n1)
+    host=$(gh auth status 2>&1 | grep "Logged in to" | awk '{print $5}' | head -n1)
     host="${host:-github.com}"
     gh auth logout --hostname "$host"
     echo -e "${GREEN}✓ 已登出 ${host}${RESET}"
@@ -98,7 +98,7 @@ show_status() {
     return 0
   fi
   echo -e "${GREEN}✓ gh 已安裝：$(gh --version | head -n1)${RESET}"
-  if gh auth status &>/dev/null; then
+  if gh auth status --hostname github.com &>/dev/null; then
     gh auth status
   else
     echo -e "${YELLOW}⚠ 尚未登入任何 GitHub 帳號${RESET}"
