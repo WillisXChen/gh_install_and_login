@@ -54,7 +54,7 @@ login_gh() {
   fi
   if gh auth status --hostname github.com &>/dev/null; then
     echo -e "${YELLOW}⚠ 已偵測到登入狀態：${RESET}"
-    gh auth status
+    gh auth status || true
     echo ""
     read -rp "是否要重新登入？(y/N): " confirm
     [[ "$(echo "$confirm" | tr '[:upper:]' '[:lower:]')" != "y" ]] && echo "取消。" && return 0
@@ -63,7 +63,7 @@ login_gh() {
   gh auth login --web --git-protocol https
   echo ""
   echo -e "${GREEN}✓ 登入完成：${RESET}"
-  gh auth status
+  gh auth status || true
 }
 
 logout_gh() {
@@ -77,7 +77,7 @@ logout_gh() {
     return 0
   fi
   echo -e "${YELLOW}目前登入狀態：${RESET}"
-  gh auth status
+  gh auth status || true
   echo ""
   read -rp "確定要登出？(y/N): " confirm
   if [[ "$(echo "$confirm" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
@@ -99,7 +99,7 @@ show_status() {
   fi
   echo -e "${GREEN}✓ gh 已安裝：$(gh --version | head -n1)${RESET}"
   if gh auth status --hostname github.com &>/dev/null; then
-    gh auth status
+    gh auth status || true
   else
     echo -e "${YELLOW}⚠ 尚未登入任何 GitHub 帳號${RESET}"
   fi
